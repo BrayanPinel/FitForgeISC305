@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="FitForge.API/FitForge.API.csproj" />
+  <Project Path="FitForge.Application/FitForge.Application.csproj" />
+  <Project Path="FitForge.Domain/FitForge.Domain.csproj" />
+  <Project Path="FitForge.Infrastructure/FitForge.Infrastructure.csproj" />
+</Solution>
