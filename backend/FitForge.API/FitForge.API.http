@@ -1,6 +1,13 @@
-@FitForge.API_HostAddress = http://localhost:5270
-
-GET {{FitForge.API_HostAddress}}/weatherforecast/
+### 1. Obtener todos los ejercicios (Prueba del Verbo GET)
+# Nota: Cambia el puerto 5270 por el puerto real que te arroje la terminal
+GET http://localhost:5270/api/ejercicios
 Accept: application/json
 
-###
+### 2. Crear un nuevo ejercicio (Prueba del Verbo POST)
+POST http://localhost:5270/api/ejercicios
+Content-Type: application/json
+
+{
+  "nombre": "Press Banca Inclinado",
+  "grupoMuscular": "Pecho"
+}
