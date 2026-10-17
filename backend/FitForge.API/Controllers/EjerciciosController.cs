@@ -11,11 +11,14 @@ namespace FitForge.API.Controllers;
 public class EjerciciosController : ControllerBase {
     private readonly IEjercicioRepository _repository;
     private readonly IValidator<CreateEjercicioRequestDto> _validator;
+    
+    private readonly IValidator<UpdateEjercicioRequestDto> _updateValidator;
 
-    public EjerciciosController(IEjercicioRepository repository, IValidator<CreateEjercicioRequestDto> validator) {
-        _repository = repository;
-        _validator = validator;
-    }
+    public EjerciciosController(IEjercicioRepository repository, IValidator<CreateEjercicioRequestDto> validator, IValidator<UpdateEjercicioRequestDto> updateValidator) {
+    _repository = repository;
+    _validator = validator;
+    _updateValidator = updateValidator;
+}
 
     [HttpGet]
     public async Task<IActionResult> GetEjercicios() {
@@ -56,5 +59,56 @@ public class EjerciciosController : ControllerBase {
         };
 
         return CreatedAtAction(nameof(GetEjercicios), new { id = response.Id }, response);
+    }
+
+    // GET - Obtener un ejercicio por su ID
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetEjercicioPorId(int id) {
+        var ejercicio = await _repository.GetByIdAsync(id);
+        if (ejercicio is null) {
+            return NotFound(); // HTTP 404 Not Found
+        }
+
+        var response = new EjercicioResponseDto {
+            Id = ejercicio.Id,
+            Nombre = ejercicio.Nombre,
+            GrupoMuscular = ejercicio.GrupoMuscular
+        };
+
+        return Ok(response); // HTTP 200 OK
+    }
+
+    // PUT - Actualizar un ejercicio existente
+    [HttpPut("{id}")]
+    public async Task<IActionResult> ActualizarEjercicio(int id, [FromBody] UpdateEjercicioRequestDto request) {
+        var validationResult = await _updateValidator.ValidateAsync(request);
+        if (!validationResult.IsValid) {
+            return BadRequest(validationResult.Errors); // HTTP 400 Bad Request
+        }
+
+        var ejercicioExistente = await _repository.GetByIdAsync(id);
+        if (ejercicioExistente is null) {
+            return NotFound(); // HTTP 404 Not Found
+        }
+
+        ejercicioExistente.Nombre = request.Nombre;
+        ejercicioExistente.GrupoMuscular = request.GrupoMuscular;
+
+        await _repository.UpdateAsync(ejercicioExistente);
+
+        return NoContent(); // HTTP 204 No Content
+    }
+
+    // DELETE - Eliminar un ejercicio existente
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> EliminarEjercicio(int id) {
+        var ejercicio = await _repository.GetByIdAsync(id);
+        if (ejercicio is null) {
+            return NotFound(); // HTTP 404 Not Found
+        }
+
+        await _repository.DeleteAsync(ejercicio);
+
+        return NoContent(); // HTTP 204 No Content
     }
 }

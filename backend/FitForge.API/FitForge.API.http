@@ -11,3 +11,19 @@ Content-Type: application/json
   "nombre": "Press Banca Inclinado",
   "grupoMuscular": "Pecho"
 }
+
+### 3. Obtener un ejercicio por ID
+GET http://localhost:5270/api/ejercicios/3
+Accept: application/json
+
+### 4. Actualizar un ejercicio existente
+PUT http://localhost:5270/api/ejercicios/3
+Content-Type: application/json
+
+{
+  "nombre": "Press Banca Inclinado con Mancuernas",
+  "grupoMuscular": "Pecho"
+}
+
+### 5. Eliminar un ejercicio
+DELETE http://localhost:5270/api/ejercicios/3
